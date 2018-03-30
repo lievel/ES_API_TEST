@@ -1,0 +1,41 @@
+package com.elasticsearch.API_TEST;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import com.elasticsearch.aggregation.AlarmTypeAggregation;
+
+public class BizOperationTest {
+	
+	public static void main(String[] args) throws Exception {
+		// TODO Auto-generated method stub
+		
+		//Parameter
+		
+		String fromDate = "2017-11-07 00:00:00";
+		String toDate = "2017-11-07 23:59:59";
+		String conditon1 = "seq_no";
+		String conditon2 = "alm_mas_id";
+
+		//예시 Site List
+        List<String> siteList = new ArrayList<String>();
+        siteList.add("ALZAH");
+        siteList.add("SKCC_Turk_TSC");
+        
+        ///예시 Bld List
+        List<String> sitebldList = new ArrayList<String>();
+        sitebldList.add("Turk_TSCTSC_AR000");
+        
+        //예시 Flr List
+        List<String> sitebldflrList = new ArrayList<String>();
+        sitebldflrList.add("ALZAHALZAH_AR01A01");
+		
+//        List<Map<String, Object>> resultList = AlarmMasAggregation.getAggregation(fromDate, toDate, conditon1, conditon2, siteList, sitebldList, sitebldflrList);
+        List<Map<String, Object>> resultList = AlarmTypeAggregation.getAggregation(fromDate, toDate, null, siteList, sitebldList, sitebldflrList);
+
+		System.out.println("Result :: " + resultList);
+		
+	}
+
+}

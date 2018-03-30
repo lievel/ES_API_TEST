@@ -1,0 +1,48 @@
+package com.elasticsearch.querybuilder;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TimeZone;
+
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.RangeQueryBuilder;
+import org.elasticsearch.script.Script;
+import org.elasticsearch.script.ScriptType;
+
+public class QueryBuilderUtil {
+
+	public static RangeQueryBuilder getDateTimeRangeQueryBuilder(String fieldname, String format, String from, String to){
+		
+		RangeQueryBuilder dateRangeBuilder = QueryBuilders.rangeQuery(fieldname)
+        		.format(format)
+        		.from(from)
+        		.to(to)
+        		.timeZone(TimeZone.getDefault().getID());
+//        		.timeZone("+09:00");
+		
+		return dateRangeBuilder;
+		
+	}
+	
+	public static BoolQueryBuilder getValidAreaQueryBuilder(List<String> siteList, List<String> sitebldList, List<String> sitebldflrList){
+		
+		String site_bld_script = "for(int i=0; i<params.site_bld.length; i++) {if(params.site_bld[i] == doc['site_id.keyword'].value + '' + doc['bld_id.keyword'].value){ return true } } ";
+        String site_bld_flr_script = "for(int i=0; i<params.site_bld_flr.length; i++) {if(params.site_bld_flr[i] == doc['site_id.keyword'].value + '' + doc['bld_id.keyword'].value + '' + doc['flr_id.keyword'].value){ return true } } ";
+        
+        Map<String, Object> params_sitebld = new HashMap();
+        params_sitebld.put("site_bld", sitebldList);
+        
+        Map<String, Object> params_sitebldflr = new HashMap();
+        params_sitebldflr.put("site_bld_flr", sitebldflrList);
+        
+		BoolQueryBuilder validAreaQueryBuilder = QueryBuilders.boolQuery();
+        validAreaQueryBuilder.should(QueryBuilders.termsQuery("site_id.keyword", siteList));
+        validAreaQueryBuilder.should(QueryBuilders.scriptQuery(new Script(ScriptType.INLINE, "painless", site_bld_script, params_sitebld)));
+        validAreaQueryBuilder.should(QueryBuilders.scriptQuery(new Script(ScriptType.INLINE, "painless", site_bld_flr_script, params_sitebldflr)));
+		
+		return validAreaQueryBuilder;
+		
+	}
+}

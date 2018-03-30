@@ -1,0 +1,8 @@
+com\elasticsearch\aggregation\AlarmMasAggregation.class
+com\elasticsearch\querybuilder\QueryBuilderUtil.class
+com\elasticsearch\common\ESConnector.class
+com\elasticsearch\API_TEST\BizOperationTest.class
+com\elasticsearch\service\ESService.class
+com\elasticsearch\util\JsonUtil.class
+com\elasticsearch\API_TEST\Test3.class
+com\elasticsearch\API_TEST\Test2.class
